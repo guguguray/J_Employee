@@ -1,17 +1,8 @@
---------------
-Release Notes
---------------
-人事資料管理系統 v1.1
-  - bug fixed: 新增刪除資料後，最後一筆資料無法刪除的問題
-  - bug fixed: 離職日未正確判斷問題
-  - bug fixed: 全部列表未正確顯示的問題 
-  - 新增: Exam_createDB.java 內新增三筆初始員工資料
-  - 移除: 檢查身分證號重複的判斷
-  - 其他 minor issue fixed
-  
-人事資料管理系統 v1.0 
-  - initial 版本  
-  
+-----------
+Project
+-----------
+人事資料管理系統 made by Java
+ 
 -----------
 file description
 -----------
@@ -40,3 +31,17 @@ private String db_pwd = "12345678";  	 // 本機資料庫的 root密碼如有不
 1. 建立資料庫及相關資料表: 執行 >>  Exam_createDB.java	
 2. 進入員工資料系統: 執行 >> Exam_login.java 
 
+
+--------------
+版本資訊
+--------------
+ ver1.1
+  - bug fixed: 新增刪除資料後，最後一筆資料無法刪除的問題
+  - bug fixed: 離職日未正確判斷問題
+  - bug fixed: 全部列表未正確顯示的問題 
+  - 新增: Exam_createDB.java 內新增三筆初始員工資料
+  - 移除: 檢查身分證號重複的判斷
+  - 其他 minor issue fixed
+  
+ver1.0 
+  - initial 版本  
