@@ -1,6 +1,6 @@
 /* 湜億 1071228程式設計師班
  * 
- * 專案: 人事資料管理系統 Version.1.0
+ * 專案: 人事資料管理系統 Version.1.1
  * 
  * Program: 資料庫建立及初始化資料
  * 
@@ -23,7 +23,7 @@ class CCreate_DB_Tabel
 	private String emp_table = "emp_tbl";
 //	private String dept_table = "dept_tbl";
 	private String user_table = "user_tbl";
-	private String db_pwd = "test";  	 // 本機資料庫的 root密碼如有不同，變更對應本機的資料庫連線密碼
+	private String db_pwd = "12345678";  	 // 本機資料庫的 root密碼如有不同，變更對應本機的資料庫連線密碼
 	
 	void ErrMsg (String msg, Exception e) {
 		JOptionPane.showMessageDialog(null, msg + "\n訊息:" + e, "錯誤訊息", JOptionPane.ERROR_MESSAGE);
@@ -119,6 +119,13 @@ class CCreate_DB_Tabel
 //			stmt.executeUpdate(Insert_initdept);
 //			JOptionPane.showMessageDialog(null, "9.資料表:" + dept_table + " 部門名稱初始資料新增成功!");
 			
+			String Insert_initemp = "INSERT INTO `emp_tbl` (`emp_id`, `emp_name`, `emp_sex`, `emp_title`, `edu`, `photo`, `social_no`, `telno`, `address`, `ext_no`, `birthday`, `onboard`, `quit_date`, `dept_name`, `create_date`, `last_modified`, `quit_mark`) VALUES (NULL, '李安', '男', '總經理', '博士', NULL, 'A000000000', '0900000000', 'Taipei', '103', '1978/4/3', '2019/3/26', NULL, '管理部', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0')";
+			stmt.executeUpdate(Insert_initemp);
+			Insert_initemp = "INSERT INTO `emp_tbl` (`emp_id`, `emp_name`, `emp_sex`, `emp_title`, `edu`, `photo`, `social_no`, `telno`, `address`, `ext_no`, `birthday`, `onboard`, `quit_date`, `dept_name`, `create_date`, `last_modified`, `quit_mark`) VALUES (NULL, '侯孝賢', '男', '專員', '大學', NULL, 'A000000001', '0900000000', '台北市', '111', '1978/4/3', '2019/3/26', NULL, '行銷業務部', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0')";
+			stmt.executeUpdate(Insert_initemp);
+			Insert_initemp = "INSERT INTO `emp_tbl` (`emp_id`, `emp_name`, `emp_sex`, `emp_title`, `edu`, `photo`, `social_no`, `telno`, `address`, `ext_no`, `birthday`, `onboard`, `quit_date`, `dept_name`, `create_date`, `last_modified`, `quit_mark`) VALUES (NULL, '蔡明亮', '男', '協理', '大專', NULL, 'A000000002', '0900000000', '台中市', '119', '1978/4/3', '2019/3/26', NULL, '軟體開發部', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0')";
+			stmt.executeUpdate(Insert_initemp);
+			JOptionPane.showMessageDialog(null, "9.資料表:" + emp_table + " 員工資料初始資料新增成功!");			
 			
 			stmt.close();
 			System.exit(0);

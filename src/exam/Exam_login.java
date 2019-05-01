@@ -17,7 +17,7 @@ public class Exam_login
 	
 	private String db_name = "EmployeeDB";
 	private String db_table = "user_tbl";
-	private String db_pwd = "test";  	 // 本機資料庫的 root密碼如有不同，變更對應本機的資料庫連線密碼
+	private String db_pwd = "12345678";  	 // 本機資料庫的 root密碼如有不同，變更對應本機的資料庫連線密碼
 	
 	private String id, password;
 	private boolean is_find, is_check;
@@ -68,7 +68,7 @@ public class Exam_login
 	{		
 		frame = new JFrame();
 		frame.getContentPane().setLayout(null);
-		frame.setTitle("人事資料管理系統 ver1.0");
+		frame.setTitle("人事資料管理系統 ver1.1");
 		frame.setBounds(100, 100, 363, 350);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -139,7 +139,7 @@ public class Exam_login
 		btnRST.setBounds(197, 210, 60, 30);
 		frame.getContentPane().add(btnRST);		
 		
-		lblMemo= new JLabel("Demo \u767B\u5165\u5E33/\u5BC6: demo / demo ", SwingConstants.CENTER);
+		lblMemo= new JLabel("Demo 帳/密: demo / demo ", SwingConstants.CENTER);
 		lblMemo.setBounds(78,260,205,30);
 		frame.getContentPane().add(lblMemo);
 		

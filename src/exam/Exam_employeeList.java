@@ -19,8 +19,7 @@ public class Exam_employeeList extends JFrame
 	
 	private String db_name = "EmployeeDB";
 	private String db_table = "emp_tbl";
-	private String db_pwd = "test";  	 // 本機資料庫的 root密碼如有不同，變更對應本機的資料庫連線密碼
-	private String id, password;
+	private String db_pwd = "12345678";  	 // 本機資料庫的 root密碼如有不同，變更對應本機的資料庫連線密碼
 	private boolean is_find, is_check;
 	private JPanel contentPane;
 	private JTable table;
@@ -38,11 +37,12 @@ public class Exam_employeeList extends JFrame
 	private ImageIcon photo;
 	private String nameVar, genderVar, eduVar, deptVar, titleVar, idVer, org_idVer;
 	private String telVer, addrVer, extVer, birthVer, onboardVer, quitVer; 
-	private String[] columnNames = {"工號", "姓名", "身分證號", "姓別", "生日", "學歷", "電話", "地址", "部門", "職稱", "分機", "到職日", "離職日", "圖片檔"};
+	private String[] columnNames = {"工號", "姓名", "身分證號", "姓別", "生日", "學歷", "電話", "地址", "部門", "職稱", "分機", "到職日", "離職日"};
 	private JTable table_1;
 	private JScrollPane scrollPane;
 	private int getEmpid;
-	private JCheckBox chkSelectAll;
+	private String empName = "";
+	private DefaultTableModel model;
 
 	/**
 	 * Launch the application.
@@ -74,13 +74,14 @@ public class Exam_employeeList extends JFrame
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
-				ShowData();
+
+				ShowData(empName);
 			}
 		});
 		
 		photo = new ImageIcon("..\\EXAM\\src\\exam\\images\\photo.png");
 		CheckDB();
-		setTitle("人事資料管理系統 ver1.0");
+		setTitle("人事資料管理系統 ver1.1");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 620, 500);
 		contentPane = new JPanel();
@@ -104,7 +105,9 @@ public class Exam_employeeList extends JFrame
 		JButton btnQry = new JButton("查詢");
 		btnQry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				empName = txtSrhName.getText();
+				// System.out.println("emp_name="+emp_name);
+				ShowData(empName);
 				
 			}
 		});
@@ -113,10 +116,10 @@ public class Exam_employeeList extends JFrame
 		
 		JButton btnLoadAll = new JButton("全部列表");
 		btnLoadAll.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-				ShowData();
-				
-				
+			public void actionPerformed(ActionEvent e) {
+				txtSrhName.setText("");
+				empName = "";
+				ShowData(empName);							
 			}
 		});
 		btnLoadAll.setBounds(507, 16, 87, 23);
@@ -258,7 +261,7 @@ public class Exam_employeeList extends JFrame
 				
 			}
 		});
-		btnAdd.setBounds(201, 394, 87, 23);
+		btnAdd.setBounds(109, 394, 87, 23);
 		contentPane.add(btnAdd);
 		
 		JButton btnUpt = new JButton("更新");
@@ -269,29 +272,31 @@ public class Exam_employeeList extends JFrame
 				
 			}
 		});
-		btnUpt.setBounds(298, 394, 87, 23);
+		btnUpt.setBounds(206, 394, 87, 23);
 		contentPane.add(btnUpt);
 		
 		JButton btnDel = new JButton("刪除");
 		btnDel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("取得 Emp_id:"+ getEmpid);
-				DeleteDB(getEmpid);				
-				ShowData();
+//				System.out.println("取得 Emp_id:"+ getEmpid);
+				DeleteDB(getEmpid);	
+				ClearData();
+				ShowData(empName);
+				
 			}
 		});
-		btnDel.setBounds(393, 394, 87, 23);
+		btnDel.setBounds(307, 394, 87, 23);
 		contentPane.add(btnDel);
 		
 		JButton btnAbout = new JButton("關於");
 		btnAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, "湜億 1071228程式設計師班\n\n"
-						+ "專案: 人事資料管理系統 Version.1.0 \n\n"
+						+ "專案: 人事資料管理系統 Version.1.1 \n\n"
 						+ "Author by (GROUP.2): \n周正庭(2)、吳威德(4)、曹晉睿(5)、方奕云(10)、蔡昀倢(17)  \n\nDate: 2019.03");				
 			}
 		});
-		btnAbout.setBounds(490, 429, 87, 23);
+		btnAbout.setBounds(507, 429, 87, 23);
 		contentPane.add(btnAbout);
 		
 		JLabel lblHead = new JLabel(photo);
@@ -301,37 +306,48 @@ public class Exam_employeeList extends JFrame
 		JButton btnClear = new JButton("清除");
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getEmpid = 0;
-				txtName.setText("");
-				txtBirth.setText("");
-				txtId.setText("");
-				txtTel.setText("");
-				txtAddr.setText("");
-				txtTitle.setText("");
-				txtExt.setText("");
-				cmbSex.setSelectedIndex(0);
-				cmbDept.setSelectedIndex(0);
-				cmbEdu.setSelectedIndex(0);
-				txtOnboard.setText("");
-				txtQuit.setText("");
+				ClearData();
 				
 			}
 		});
-		btnClear.setBounds(490, 394, 87, 23);
+		btnClear.setBounds(404, 394, 87, 23);
 		contentPane.add(btnClear);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 46, 584, 122);
 		contentPane.add(scrollPane);
 		
-		table_1 = new JTable();
+		table_1 = new JTable(model) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		scrollPane.setViewportView(table_1);
 		
-		chkSelectAll = new JCheckBox("隱藏顯示已刪除的記錄");
-		chkSelectAll.setSelected(true);
-		chkSelectAll.setForeground(Color.gray);
-		chkSelectAll.setBounds(335, 16, 166, 23);
-		contentPane.add(chkSelectAll);
+		JButton btnExit = new JButton("\u7D50\u675F");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		btnExit.setBounds(507, 394, 87, 23);
+		contentPane.add(btnExit);
+		
+		JButton btnNewButton = new JButton("Help");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String help = "[功能說明]\n\n全部列表: 列出人是資料庫中的所有記錄 (不包含已經列為刪除的記錄)\n\n"
+						+"新增資料:\n\t1.填入相關的資料後按下 [新增]鈕即可新增資料\n\n"
+						+"更新資料: \n\t1. 請於列表中點選欲編輯的記錄\n\t2. 完成相關欄位的資料修改後，按下[更新]鈕即可更新資料\n\n"
+						+"查詢資料:\n\t1. 請於輸入員工姓名關鍵字，按下[查詢]鈕即可查詢資料\n\n"
+						+"刪除資料:\n\t1. 請於列表中點選欲刪除的記錄，按下[刪除]鈕即可刪除資料\n"
+						+"\tMemo: 刪除資料後，記錄並未實際仍存在資料庫中，可供日後有需要時查詢\n\n"
+						+"關於: 有關人事資料管理系統，版本、製作人員等相關資訊\n\nHelp: 本說明資訊";
+				JOptionPane.showMessageDialog(null, help);
+			}
+		});
+		btnNewButton.setBounds(404, 429, 87, 23);
+		contentPane.add(btnNewButton);
 		
 	}
 	// 檢查 DB 連線
@@ -356,10 +372,26 @@ public class Exam_employeeList extends JFrame
 		}
 	}
 	
-	// 顯示所有資料
-	void ShowData() 
+	void ClearData() {
+		getEmpid = 0;
+		txtName.setText("");
+		txtBirth.setText("");
+		txtId.setText("");
+		txtTel.setText("");
+		txtAddr.setText("");
+		txtTitle.setText("");
+		txtExt.setText("");
+		cmbSex.setSelectedIndex(0);
+		cmbDept.setSelectedIndex(0);
+		cmbEdu.setSelectedIndex(0);
+		txtOnboard.setText("");
+		txtQuit.setText("");
+	}
+	
+	// 在 JTable 中顯示資料料
+	void ShowData(String empName) 
 	{	
-		DefaultTableModel model = new DefaultTableModel();
+		model = new DefaultTableModel();
 		model.setColumnIdentifiers(columnNames);
 		table_1.setModel(model);
 		table_1.setModel(model); 
@@ -384,11 +416,15 @@ public class Exam_employeeList extends JFrame
 		String ext_no = "";
 		Date birthday, onboard, quit_date;
 		String dept_name = "";
+		Boolean quitMark = false;
 		
 		try
 		{						
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM emp_tbl");			
+			if (empName == "")	
+				rs = stmt.executeQuery("SELECT * FROM emp_tbl WHERE quit_mark=false");
+			else
+				rs = stmt.executeQuery("SELECT * FROM emp_tbl WHERE quit_mark=false AND emp_name like '%" + empName+ "%'");
 			
 			int i =0;
 			while (rs.next())
@@ -406,22 +442,27 @@ public class Exam_employeeList extends JFrame
 			ext_no = rs.getString("ext_no");
 			onboard = rs.getDate("onboard");
 			quit_date = rs.getDate("quit_date");
-			photo = rs.getString("photo");
+			quitMark = rs.getBoolean("quit_mark");
+			// photo = rs.getString("photo");
 			
-			model.addRow(new Object[]{emp_id, emp_name, social_no, emp_sex, birthday, edu, telno, address, dept_name, emp_title, ext_no, onboard, quit_date, photo});
+			model.addRow(new Object[]{emp_id, emp_name, social_no, emp_sex, birthday, edu, telno, address, dept_name, emp_title, ext_no, onboard, quit_date});
+//			System.out.println("emp_id="+emp_id+", quitMark="+quitMark);
+
 			i++; 
 			}
 			
 			if(i <1)
 			{
-			JOptionPane.showMessageDialog(null, "資料庫無任何資料");
+			JOptionPane.showMessageDialog(null, "資料庫目前無任何資料");
 			}
 			
 			table_1.addMouseListener(new MouseAdapter() {
 				
 				@Override
 				public void mouseClicked (MouseEvent e) {
+					
 					int i  = table_1.getSelectedRow();
+										
 					getEmpid = Integer.parseInt(model.getValueAt(i, 0).toString());
 					
 					txtName.setText(model.getValueAt(i, 1).toString());
@@ -514,7 +555,8 @@ public class Exam_employeeList extends JFrame
 	// 新資料欄位檢查
 	void NewData()
 	{
-		is_check = true;		
+		is_check = true;
+		empName = "";
 		nameVar = txtName.getText().trim();
 		genderVar = (String)cmbSex.getSelectedItem();
 		eduVar = (String)cmbEdu.getSelectedItem();
@@ -532,67 +574,63 @@ public class Exam_employeeList extends JFrame
 			quitVer = "NULL";
 		else {
 			quitVer = "'" + quitVer + "'";
-			System.out.println(quitVer);
+			// System.out.println("quitVer="+quitVer);
+			if (!isValidDate(quitVer))
+			{
+				ErrDataMsg("離職日、格式錯誤！ 正確格式為 YYYY/MM/DD");
+				is_check = false;
+			}
 		}		
 		
 		if (genderVar.equals("..請選擇..") || eduVar.equals("..請選擇..") || deptVar.equals("..請選擇..") ) {
 			ErrDataMsg("性別、學歷、部門名 必須選擇！");
-		}
-		
-		if (nameVar.equals("") || titleVar.equals("") || idVer.equals("") || telVer.equals("") || addrVer.equals("") || extVer.equals("") || birthVer.equals("") || onboardVer.equals("")) {
+			is_check = false;
+		} else if (nameVar.equals("") || titleVar.equals("") || idVer.equals("") || telVer.equals("") || addrVer.equals("") || extVer.equals("") || birthVer.equals("") || onboardVer.equals("")) {
 			ErrDataMsg("必填欄位不允許空白！");
 			is_check = false;
-		}
-		
-
-		if (nameVar.length() > 20 || titleVar.length() > 20)
+		} else if (nameVar.length() > 20 || titleVar.length() > 20)
 		{
 			ErrDataMsg("姓名、職稱最多20個字！");
 			is_check = false;
-		}
-		
-		if (idVer.length() > 10)
-		{
+		} else if (idVer.length() > 10) {
 			ErrDataMsg("身分證號最多10個字！");
 			is_check = false;
-		}
-		if (telVer.length() > 15)
-		{
+		} else if (telVer.length() > 15) {
 			ErrDataMsg("電話號碼最多15個字！");
 			is_check = false;
-		}
-		if (addrVer.length() > 50)
-		{
+		} else if (addrVer.length() > 50) {
 			ErrDataMsg("地址最多50個字！");
 			is_check = false;
-		}
-		if (extVer.length() > 4)
-		{
+		} else if (extVer.length() > 4)	{
 			ErrDataMsg("分機最多4個字！");
 			is_check = false;
-		}
-		if (!isValidDate(birthVer) || !isValidDate(onboardVer))
+		} else if (!isValidDate(birthVer) || !isValidDate(onboardVer))
 		{
 			ErrDataMsg("生日或到職日、格式錯誤！ 正確格式為 YYYY/MM/DD");
 			is_check = false;
 		}
 		
+		
+		
+		
 		// 檢查 DB 是否有身分證號重複資料
 		org_idVer ="";
-		is_find = IsFindDB(org_idVer, idVer, false);
-		System.out.println("新資料檢查: org_idVer = "+ org_idVer);
+		// is_find = IsFindDB(org_idVer, idVer, false);
+		// System.out.println("更新資料檢查: org_idVer = "+ org_idVer);
 		
-		if (is_find)
-		{
-			ErrDataMsg("身分證號重複！無法新增！");
-			is_check = false;
-		}				
+//		if (is_find)
+//		{
+//			ErrDataMsg("身分證號重複！無法新增！");
+//			is_check = false;
+//		}				
 
 		if (is_check == true)
 		{
 			InsertDB(nameVar, genderVar, eduVar, deptVar, titleVar, idVer, 
 					telVer, addrVer, extVer, birthVer, onboardVer, quitVer);
-			ShowData();
+			ClearData();
+			ShowData(empName);
+			
 		}
 	}
 	
@@ -626,6 +664,12 @@ public class Exam_employeeList extends JFrame
 		birthVer = txtBirth.getText().trim();
 		onboardVer = txtOnboard.getText().trim();
 		quitVer = txtQuit.getText().trim(); 
+//		output check
+//		System.out.println("idVer=" + idVer);
+//		System.out.println("telVer=" + telVer);
+//		System.out.println("addrVer=" + addrVer);
+//		System.out.println("birthVer=" + birthVer);
+//		System.out.println("onboardVer=" + onboardVer);
 		
 		
 		if (empid == 0) {
@@ -637,66 +681,51 @@ public class Exam_employeeList extends JFrame
 				quitVer = "NULL";
 			else {
 				quitVer = "'" + quitVer + "'";
-				System.out.println(quitVer);
+				// System.out.println(quitVer);
 			}		
 			
 			if (genderVar.equals("..請選擇..") || eduVar.equals("..請選擇..") || deptVar.equals("..請選擇..") ) {
 				ErrDataMsg("性別、學歷、部門名 必須選擇！");
-			}
-			
-			if (nameVar.equals("") || titleVar.equals("") || idVer.equals("") || telVer.equals("") || addrVer.equals("") || extVer.equals("") || birthVer.equals("") || onboardVer.equals("")) {
+			} else if (nameVar.equals("") || titleVar.equals("") || idVer.equals("") || telVer.equals("") || addrVer.equals("") || extVer.equals("") || birthVer.equals("") || onboardVer.equals("")) {
 				ErrDataMsg("必填欄位不允許空白！");
 				is_check = false;
-			}
-			
-		
-			if (nameVar.length() > 20 || titleVar.length() > 20)
-			{
+			} else if (nameVar.length() > 20 || titleVar.length() > 20) {
 				ErrDataMsg("姓名、職稱最多20個字！");
 				is_check = false;
-			}
-			
-			if (idVer.length() > 10)
-			{
+			} else if (idVer.length() > 10) {
 				ErrDataMsg("身分證號最多10個字！");
 				is_check = false;
-			}
-			if (telVer.length() > 15)
-			{
+			} else if (telVer.length() > 15) {
 				ErrDataMsg("電話號碼最多15個字！");
 				is_check = false;
-			}
-			if (addrVer.length() > 50)
-			{
+			} else if (addrVer.length() > 50) {
 				ErrDataMsg("地址最多50個字！");
 				is_check = false;
-			}
-			if (extVer.length() > 4)
-			{
+			} else if (extVer.length() > 4) {
 				ErrDataMsg("分機最多4個字！");
 				is_check = false;
-			}
-			if (!isValidDate(birthVer) || !isValidDate(onboardVer))
-			{
+			} else if (!isValidDate(birthVer) || !isValidDate(onboardVer)) {
 				ErrDataMsg("生日或到職日、格式錯誤！ 正確格式為 YYYY/MM/DD");
 				is_check = false;
 			}
 			
 			// 檢查 DB 是否有身分證號重複資料
-			System.out.println("更新資料檢查: org_idVer= "+ org_idVer);
-			is_find = IsFindDB(org_idVer, idVer, false);
+//			System.out.println("更新資料檢查: org_idVer= "+ org_idVer);
+			// is_find = IsFindDB(org_idVer, idVer, false);
 		
-			if (is_find)
-			{
-				ErrDataMsg("身分證號重複！無法新增！");
-				is_check = false;
-			}				
+//			if (is_find)
+//			{
+//				ErrDataMsg("身分證號與其他記錄重複！無法更新！");
+//				is_check = false;
+//			}				
 		
 			if (is_check == true)
 			{
 				UpDateDB(getEmpid, nameVar, genderVar, eduVar, deptVar, titleVar, idVer, 
 						telVer, addrVer, extVer, birthVer, onboardVer, quitVer);
-				ShowData();
+				ClearData();
+				ShowData(empName);
+				
 			}
 		}
 				
@@ -740,7 +769,8 @@ public class Exam_employeeList extends JFrame
 			rs = stmt.executeQuery("SELECT social_no FROM " + db_table + " WHERE social_no ='" + socialNo + "'");
 
 			while (rs.next()) {
-				System.out.println(rs.getString("social_no"));
+//				System.out.println("Submitted social_no=" + rs.getString("social_no"));
+				// 判斷是否與資料庫中的其他資料身分證號相同
 				if (orgSocial.equals(rs.getString("social_no")))
 					is_find = false;
 				else
@@ -776,20 +806,22 @@ public class Exam_employeeList extends JFrame
 	{
 		try
 		{
-			System.out.println("quit date" + quitd);
+//			System.out.println("quit_date=" + quitd);
 			stmt = conn.createStatement();
 			String sqlUpd = "UPDATE emp_tbl SET emp_name='" + name + "', emp_sex='" + gender 
 					+ "', emp_title='" + title + "', edu='" + edu + "', photo=NULL, social_no='" + social 
 					+ "', telno='" + tel + "', address='" + addr + "', ext_no='" + ext 
-					+ "', birthday='" + birth + "', onboard= '" + onboard + "', quit_date=" + quitd 
+					+ "', birthday='" + birth + "', onboard='" + onboard + "', quit_date=" + quitd 
 					+ ", dept_name='" + dept + "' WHERE emp_id=" + empid;
-			System.out.println(sqlUpd);
+//			System.out.println(sqlUpd);
 			
-//			stmt.executeUpdate(sqlUpd);
+			stmt.executeUpdate(sqlUpd);
+			JOptionPane.showMessageDialog(null, "資料更新成功！");
+			
 		}
 		catch (SQLException e)
 		{
-			ErrDBMsg("7、更新會員資料產生錯誤！", e);
+			ErrDBMsg("7、更新資料時產生錯誤！", e);
 		}
 		finally
 		{
